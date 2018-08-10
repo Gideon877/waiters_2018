@@ -1,0 +1,32 @@
+{
+  "name": "waiter_app",
+  "version": "1.0.2",
+  "description": "This App allows a waiter to sselect days they would like to work and the admin will be able to see",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Thabang Gideon Magaola",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.0",
+    "body-parser": "^*.*.*",
+    "express": "^*.*.*",
+    "express-flash": "^*.*.*",
+    "express-handlebars": "^*.*.*",
+    "express-session": "^*.*.*",
+    "flash": "^*.*.*",
+    "lodash": "^*.*.*",
+    "moment": "^*.*.*",
+    "mongoose": "^*.*.*"
+  },
+  "devDependencies": {
+    "husky": "^*.*.*"
+  }
+}
