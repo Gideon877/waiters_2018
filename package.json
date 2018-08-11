@@ -27,6 +27,10 @@
     "mongoose": "^*.*.*"
   },
   "devDependencies": {
-    "husky": "^*.*.*"
+    "husky": "^*.*.*",
+    "nodemon": "^1.11.0"
+  },
+  "engine": {
+    "node": "v9.5.0"
   }
 }
