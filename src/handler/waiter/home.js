@@ -17,7 +17,7 @@ module.exports = function(models) {
             name(data, user);
            
             if (_.isEmpty(shift) || !_.isEmpty(shift) && shift.length > 3 || shift.length < 3) {
-                req.flash('error', 'Please select 3 days!') && 
+                req.flash('error', 'Select three prefered working days, and press save button to submit') && 
                 res.redirect('/waiters/' + user.id);
             } else {
                 const updatedUser = updateUserDays(user, shift);
@@ -41,11 +41,42 @@ module.exports = function(models) {
                 return element._id == req.params.id
             });
             name(data, user);
-            let days = filterDay(users, data);
-            let uniqDays = removeNames(days);  
-            let b = getStatus(uniqDays, user);
-            res.render('waiter/home', { user, days:b })
+            let userDays = filterDay(users, data);
+            let uniqDays = removeNames(userDays);  
+            let days = getStatus(uniqDays, user);
+            console.log(days);
+            
+            res.render('waiter/home', { user, days });
         })) : res.redirect('/login');
+    }
+
+    const updateUserProfile = (req, res, done) => {
+        let { firstName, lastName, email, cell, username, password } = req.body;
+
+        mongoDB.findOne({_id: req.params.id}, (err, user) => {
+            if (err) return done(err);
+            let updatedUser = {
+                firstName: _.capitalize(firstName),
+                lastName: _.capitalize(lastName),
+                email,
+                cell,
+                username,
+                password,
+                timestamp: {
+                    lastUpdated: moment().format('llll')
+                }
+            };
+            // user.firstName = firstName;
+            // user.lastName = lastName;
+            // user.email = email;
+            // user.cell = cell;
+            // user.username = username;
+            // user.password = password;
+            // user.timestamp.lastUpdated = moment().utc('MMMM Do YYYY, h:mm:ss a');
+            // user.save()
+            // console.log(user);
+            res.render('waiter/account', { user: updatedUser });
+        })
     }
 
     function updateUserDays(user, days) {
@@ -76,10 +107,12 @@ module.exports = function(models) {
                 element.class = 'positive';
                 element.status = 'Fully Booked';
                 element.checkmark = 'checkmark';
+                element.space = 'Not Available';
             } else {
                 element.class = 'warning'
                 element.state = '';
                 element.status = 'Available';
+                element.space =  3 - element.statusBar;
             }
             _.find(element.names, function(x){
                 if (x == newUser.firstName) {
@@ -126,6 +159,7 @@ module.exports = function(models) {
 
     return {
         getWaiterScreen,
-        updateUser
+        updateUser,
+        updateUserProfile
     }
 }

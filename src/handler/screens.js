@@ -3,6 +3,8 @@ const data = require('../lib/days')
 const _ = require('lodash');
 
 module.exports = function(models) {
+    const mongoDB = models.Waiter;
+    
     const getAdminScreen = (req, res, done) => {
         (req.session && req.session.user) 
             ? res.render('admin/home')
@@ -28,6 +30,18 @@ module.exports = function(models) {
         }
     };
 
+    const getWaiterSettingsScreen = (req, res, done) => {
+        (req.session && req.session.user) 
+            ? (mongoDB.findOne({
+                _id: req.params.id
+            }, function(err, user) {
+                if (err) return done(err);
+                res.render('waiter/account', { user });
+            })
+            )
+            : res.render('home');
+    }
+
     const getRegistrationScreen = (req, res, done) => {
         (req.session && req.session.user) 
         ? res.redirect('/login')
@@ -46,5 +60,6 @@ module.exports = function(models) {
         getHomeScreen,
         getLoginScreen,
         getRegistrationScreen,
+        getWaiterSettingsScreen
     }
 }

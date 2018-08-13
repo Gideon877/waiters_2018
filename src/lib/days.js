@@ -6,6 +6,7 @@ module.exports = [{
     class: '',
     state: '',
     checkmark: '',
+    space: 0,
     statusBtn: ''
 },
 {
@@ -16,6 +17,7 @@ module.exports = [{
     class: '',
     state: '',
     checkmark: '',
+    space: 0,
     statusBtn: ''
 },
 {
@@ -26,6 +28,7 @@ module.exports = [{
     class: '',
     state: '',
     checkmark: '',
+    space: 0,
     statusBtn: ''
 },
 {
@@ -36,6 +39,7 @@ module.exports = [{
     class: '',
     state: '',
     checkmark: '',
+    space: 0,
     statusBtn: ''
 },
 {
@@ -46,6 +50,7 @@ module.exports = [{
     class: '',
     state: '',
     checkmark: '',
+    space: 0,
     statusBtn: ''
 },
 {
@@ -56,6 +61,7 @@ module.exports = [{
     class: '',
     state: '',
     checkmark: '',
+    space: 0,
     statusBtn: ''
 },
 {
@@ -66,6 +72,7 @@ module.exports = [{
     class: '',
     state: '',
     checkmark: '',
+    space: 0,
     statusBtn: ''
 },
 ];

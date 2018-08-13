@@ -63,6 +63,10 @@ app.post('/register', signUp.validate)
 app.get('/waiters/:id', waiters.getWaiterScreen);
 app.post('/waiters/:id', waiters.updateUser);
 
+// Waiter route to waiter's page
+app.get('/settings/:id', screens.getWaiterSettingsScreen);
+app.post('/settings/:id', waiters.updateUserProfile);
+
 // Admin page route
 app.get('/admin/:id', screens.getAdminScreen);
 // app.post('/admin/:id')

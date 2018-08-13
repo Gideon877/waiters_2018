@@ -2,53 +2,68 @@
 </head>
 
 <body>
+    <hr>
     <div class="ui container">
-        <div class="ui labeled icon menu" id="you can remove, compact, labeled">
+        <div class="ui icon menu">
             <div class="item">
-                <i class="home icon"></i>Home
+                <i class="home icon"></i>
             </div>
             <div class="item">
                 <i class="info icon"></i>
-                <a href="#">About</a>
+                <a href="#"></a>
             </div>
             <div class="item">
-                <i class="users icon"></i>
-                <a href="#">Services</a>
+                <a href="/settings/{{user._id}}">
+                    <i class="user circle icon"></i>
+                </a>
             </div>
+
             <div class="right item">
-                <i class="sign out icon"></i>
-                <a href="/logout">Sign-Out</a>
+                <a href="/logout">
+                    <i class="sign out icon"></i>
+                </a>
             </div>
-            <div class="item">
-                <i class="user circle icon"></i>
-                <a href="#">{{user.firstName}}</a>
+            <div class="ui compact menu">
+                <a class="item">
+                    <i class="icon mail"></i> Messages
+                    <div class="floating ui red label">1</div>
+                </a>
+                <a class="item">
+                    <i class="icon users"></i> Friends
+                    <div class="floating ui teal label">3</div>
+                </a>
             </div>
         </div>
     </div>
-
+    <hr>
     <div class="ui container">
-        <hr>
-        <br>
-        <h2 class="ui header">
-            <i class="settings icon"></i>
-            <div class="content">
-                Last Updated: {{user.timestamp.lastUpdated}}
-                <div class="sub header">Manage your shift.
-                   
-                <p>
-                    {{#if messages.error}}
-                        <em class="error" style="color:red">
-                            {{messages.error}}
-                        </em>
-                    {{else}}
-                         </em> working days.</em></div>
-                    {{/if}}
-                </p>
+        <div class="ui message">
+            <div class="header">
+                Hello, {{user.firstName}}. This is a waiter web app.
             </div>
-        </h2>
-
+            <ul class="list">
+                <li>You can now manage your shift here</li>
+                {{#if messages.error}}
+                <li>
+                    <em class="error" style="color:red">{{messages.error}}</em>
+                </li>
+                {{else}}
+                <li>Select three prefered working days, and press
+                    <em>
+                        <b style="color: blue">save</b>
+                    </em> button to submit</li>
+                {{/if}}
+            </ul>
+        </div>
         <hr>
-        <br>
+
+
+    </div>
+    <div class="ui container">
+        <h4 class="ui horizontal divider blue header">
+            <i class="bar chart teal icon"></i>
+            Shift
+        </h4>
         <form action="" method="POST">
             <table class="ui celled table">
                 <thead>
@@ -57,6 +72,7 @@
                         <th>Days</th>
                         <th>Waiters</th>
                         <th>Status</th>
+                        <th>Space Available</th>
 
                     </tr>
                 </thead>
@@ -84,19 +100,14 @@
                                 {{#each names}}
                                 <div class="item">
                                     <i class="user icon"></i>
-                                    <div class="content">
-                                        <div class="header">{{this}}</div>
-                                        <div class="description">
-                                            <a>
-                                                <b>Last Updated</b>
-                                            </a> just now.</div>
-                                    </div>
                                 </div>
                                 {{/each}}
                             </div>
                         </td>
                         <td>
                             <i class="icon {{this.checkmark}}"></i> {{state}}</td>
+                        <td>
+                            <i class="icon {{state}}"></i> {{space}}</td>
                     </tr>
                     {{/each}}
                 </tbody>
