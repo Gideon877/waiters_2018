@@ -16,21 +16,34 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.0",
-    "body-parser": "^*.*.*",
-    "express": "^*.*.*",
-    "express-flash": "^*.*.*",
-    "express-handlebars": "^*.*.*",
-    "express-session": "^*.*.*",
-    "flash": "^*.*.*",
-    "lodash": "^*.*.*",
-    "moment": "^*.*.*",
-    "mongoose": "^*.*.*"
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "express-flash": "0.0.2",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.6",
+    "lodash": "^4.17.10",
+    "mocha": "^5.2.0",
+    "moment": "^2.22.2",
+    "mongoose": "^5.2.9"
   },
   "devDependencies": {
-    "husky": "^*.*.*",
-    "nodemon": "^1.11.0"
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "husky": "^0.14.3",
+    "nodemon": "^1.18.3"
   },
   "engine": {
     "node": "v9.5.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gideon877/waiters_2018.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gideon877/waiters_2018/issues"
+  },
+  "homepage": "https://github.com/Gideon877/waiters_2018#readme"
 }

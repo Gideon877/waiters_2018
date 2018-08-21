@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const _ = require('lodash');
 
 module.exports = function(models) {
-    const mongoDB = models.Waiter;
+    const mongoDB = models.User;
     const admin = (req, res, done) => {
         (req.session && req.session.user) ? res.redirect('/') : getWaiters({ res, req, done });
     }

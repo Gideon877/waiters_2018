@@ -26,11 +26,11 @@
             <div class="ui compact menu">
                 <a class="item">
                     <i class="icon mail"></i> Messages
-                    <div class="floating ui red label">1</div>
+                    <div class="floating ui red label">{{messageCount}}</div>
                 </a>
-                <a class="item">
+                <a class="item" href="/friends/{{user._id}}">
                     <i class="icon users"></i> Friends
-                    <div class="floating ui teal label">3</div>
+                    <div class="floating ui teal label">{{friendsCount}}</div>
                 </a>
             </div>
         </div>
@@ -45,7 +45,7 @@
                 <li>You can now manage your shift here</li>
                 {{#if messages.error}}
                 <li>
-                    <em class="error" style="color:red">{{messages.error}}</em>
+                    <em class="error" >{{messages.error}}</em>
                 </li>
                 {{else}}
                 <li>Select three prefered working days, and press
@@ -56,8 +56,6 @@
             </ul>
         </div>
         <hr>
-
-
     </div>
     <div class="ui container">
         <h4 class="ui horizontal divider blue header">

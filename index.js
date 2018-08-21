@@ -6,6 +6,7 @@ const flash = require('express-flash');
 const session = require('express-session');
 
 const Admin = require('./src/handler/admin/home');
+const Friends = require('./src/handler/waiter/friends');
 const Screens = require('./src/handler/screens');
 const SignUp = require('./src/handler/user/signup');
 const Login = require('./src/handler/user/login');
@@ -15,6 +16,7 @@ const Models = require('./src/schema/models');
 const models = Models(process.env.MONGO_DB_URL || 'mongodb://localhost/waiters', { useNewUrlParser: true });
 
 const admin = Admin(models);
+const friends = Friends(models);
 const login = Login(models);
 const signUp = SignUp(models);
 const screens = Screens(models);
@@ -38,7 +40,6 @@ app.use(bodyParser.urlencoded({
 
 // parse application/json
 app.use(bodyParser.json())
-app.use(session({cookieName: 'session', secret: 'random_string_goes_here', duration: 30 * 60 * 1000, activeDuration: 5 * 60 * 1000,}));
 app.use(session({
     secret: 'keyboard cat',
     cookie: {
@@ -61,15 +62,22 @@ app.post('/register', signUp.validate)
 
 // Waiter route to waiter's page
 app.get('/waiters/:id', waiters.getWaiterScreen);
-app.post('/waiters/:id', waiters.updateUser);
+app.post('/waiters/:id', waiters.updateUserDays);
 
 // Waiter route to waiter's page
 app.get('/settings/:id', screens.getWaiterSettingsScreen);
-app.post('/settings/:id', waiters.updateUserProfile);
+// app.post('/settings/:id', waiters.updateUserProfile);
 
 // Admin page route
 app.get('/admin/:id', screens.getAdminScreen);
 // app.post('/admin/:id')
+
+// Friends route to friend's page
+app.get('/friends/:id', friends.getScreen);
+// app.post('/friends/:id', friends.updateUser);
+
+app.get('/users/:id', friends.getUserScreen);
+// app.post('/users/:id', friends.updateUser);
 
 // //logout screen
 app.get('/logout', function(req, res) {

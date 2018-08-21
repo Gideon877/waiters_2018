@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const _ = require('lodash');
 
 module.exports = function(models) {
-    const mongoDB = models.Waiter;
+    const mongoDB = models.User;
     const userLogin = (req, res, done) => {
         const body = req.body;
         (req.session && req.session.user) ? res.redirect('/') : verifyUser(body, { res, req, done });
@@ -17,8 +17,9 @@ module.exports = function(models) {
             if (err) return done(err);
 
             (!user) ? ( 
+                req.flash('errorTitle', 'Login failed!') &&
                 req.flash('error', 'Username does not exist!') && 
-                res.render('login')
+                res.render('signup/login')
             ) : 
             ( 
                 bcrypt.compare(password, user.password, function(err, result) {
@@ -33,9 +34,9 @@ module.exports = function(models) {
                             res.redirect('/waiters/' + user.id)
                         )
                     } else {
-                        console.log('Password Failed');
+                        req.flash('errorTitle', 'Login failed!')
                         req.flash('error', 'Incorrect Password');
-                        res.render('login');
+                        res.render('signup/login');
                     }
                 })
             )

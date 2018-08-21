@@ -3,7 +3,7 @@ const data = require('../lib/days')
 const _ = require('lodash');
 
 module.exports = function(models) {
-    const mongoDB = models.Waiter;
+    const mongoDB = models.User;
     
     const getAdminScreen = (req, res, done) => {
         (req.session && req.session.user) 
@@ -43,13 +43,17 @@ module.exports = function(models) {
     }
 
     const getRegistrationScreen = (req, res, done) => {
+        console.log('herrrrr');
+        
         (req.session && req.session.user) 
         ? res.redirect('/login')
         : res.render('signup/register');
     };
 
     function getUser(params) {
-        let { username, id, res, req } = params;
+        console.log(params);
+        
+        let { username, id, res } = params;
         (username === 'admin') 
         ? res.redirect('/admin/' + id)
         : res.redirect('/waiters/' + id)
