@@ -87,3 +87,39 @@ module.exports.updateShiftDays = (params) => {
     user.save();
     return user;
 }
+
+
+/**
+ * @param  {Object} params
+ * @param  {String} params.id
+ * @param  {Function} params.getFriends
+ * 
+ */
+
+module.exports.getFriendsById = (params) => {
+    const getParams = {
+        _id: params.id
+    }
+    getFriends.findOne(getParams, (err, friends) => {
+        if (err) return done(err);
+         console.log('------', friends);
+        return friends;
+    })
+}
+
+
+/**
+ * @param  {Object} params
+ * @param  {String} params.id
+ * @param  {Function} params.getMessages
+ * 
+ */
+
+module.exports.getMessagesById = (params) => {
+    const getParams = { _id: params.id }
+    getMessages.findOne(getParams, (err, messages) => {
+        if (err) return done(err);
+         console.log('------', messages);
+        return messages;
+    })
+}

@@ -4,6 +4,8 @@ const _ = require('lodash');
 
 module.exports = function(models) {
     const mongoDB = models.User;
+    const getFriends = models.Friends;
+    const getMessages = models.Messages;
     
     const getAdminScreen = (req, res, done) => {
         (req.session && req.session.user) 
