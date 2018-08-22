@@ -11,3 +11,4 @@ npm install mocha;
 npm install moment;
 npm install mongoose;
 npm install nodemon --save-dev;
+npm install --save-dev jest
