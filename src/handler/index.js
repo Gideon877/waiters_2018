@@ -1,46 +1,62 @@
 const _ = require("lodash");
 const moment = require("moment");
 // const days = require('../lib/days');
-var days = [
-  { day: "Monday", names: ["Thabang", "Viwe"], status: "" },
-  { day: "Wednesday", names: ["Amanda", "Viwe"], status: "" },
-  { day: "Thursday", names: ["Amanda"], status: "" },
-  { day: "Friday", names: [], status: "" }
-];
-
-var user = [
+var friends = [
   {
-    name: "Thabang",
-    days: ["Monday", "Wednesday", "Friday"]
+    owner: "123",
+    friend: '124',
+    days: []
   },
   {
-    name: "Amanda",
-    days: ["Wednesday", "Monday"]
+    owner: "123",
+   friend: '125',
+    days: []
+  },
+  {
+    owner: "124",
+   friend: '125',
+    days: []
   }
 ];
 
-user.forEach(function(o) {
-  const userName = o.name;
+var users = [
+  {
+    firstName: "Thabang",
+    _id: '123',
+    days: []
+  },
+  {
+    firstName: "Amanda",
+    _id: '124',
+    days: []
+  },
+  {
+    firstName: "Viwe",
+    _id: '125',
+    days: []
+  }
+];
 
-  days.forEach(function(e) {
-    const weekday = e.day;
-    e.timestamp = moment().format();
-    e.lastSeen = moment(moment.utc()).from(moment(new Date()));
+let user = {
+  _id: '123',
+  firstName: 'Thabang'
+}
 
-    const arrNames = e.names;
-    const userDays = o.days;
-    _.remove(arrNames, function(name) {
-      return name === userName;
-    });
-    
-    userDays.forEach(function(params) {
-      if (weekday == params) {
-        arrNames.push(userName);
-      }
-    });
-  });
-});
+console.log(friends);
+
+
+users.forEach(function(e){
+  friends.forEach(function(o){
+    if (e._id == o.friend) {
+      o.firstName = e.firstName;
+    }
+  })
+})
 
 console.log("-------------------------------------------------------");
 
-console.log(days);
+_.remove(friends, function(x){
+  return x.owner !== user._id;
+})
+
+console.log(friends);

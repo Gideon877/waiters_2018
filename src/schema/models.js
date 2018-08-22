@@ -17,16 +17,21 @@ module.exports = function(mongoUrl){
             lastSeen: String,
         },
         isUserActive: Boolean,
+        friendCount: {
+            connect: Number,
+            requests: Number,
+        }
     });
 
     const Friends = mongoose.model('Friends', {
         ownerId: { type: String, required: true },
         friendId: { type: String, required: true },
-        status: { type: String, required: true },
+        status: { type: String, required: true }, //pending, connected, rejected, deleted
         timestamp: {
             created: String,
             lastUpdated: String,
-        }
+        },
+        friend: {type: Object, require: false}
     });
 
     const Messages = mongoose.model('Messages', {

@@ -4,6 +4,7 @@ const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const flash = require('express-flash');
 const session = require('express-session');
+const moment = require('moment');
 
 const Admin = require('./src/handler/admin/home');
 const Friends = require('./src/handler/waiter/friends');
@@ -76,11 +77,29 @@ app.get('/admin/:id', screens.getAdminScreen);
 app.get('/friends/:id', friends.getScreen);
 // app.post('/friends/:id', friends.updateUser);
 
-app.get('/users/:id', friends.getUserScreen);
-// app.post('/users/:id', friends.updateUser);
+app.get('/waiter/:id/friend/:friendId', friends.getUserScreen);
+// app.post('/waiter/:id/friend/:friendId', friends.updateUser);
 
 // //logout screen
-app.get('/logout', function(req, res) {
+app.get('/logout', function(req, res, done) {
+    console.log('logging Out', req.session.user);
+    
+    if (req.session && req.session.user) {
+        let { user } = req.session;
+        
+        models.User.findOneAndUpdate({
+            username: user.username,
+            _id: user._id
+        }, {
+            timestamp: {
+                lastSeen: moment.utc()
+            }
+        }, (err, user) => {
+            if (err) return done(err);
+            console.log('logging Out 2', user);
+        })
+    }
+    
     req.session.destroy();
     res.redirect('/login');
 });

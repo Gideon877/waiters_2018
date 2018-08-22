@@ -44,7 +44,7 @@ module.exports = function(models) {
                 res.redirect('/waiters/' + user.id);
             } else {
                 General.resetWeekStatus(data, user);
-                user = GeneralupdateShiftDays({shift, user});
+                user = General.updateShiftDays({shift, user});
                 _.remove(users, function (element) {
                     return element._id == req.params.id
                 });

@@ -15,7 +15,8 @@ module.exports = function(models) {
 
         mongoDB.findOne({ username }, (err, user) => {
             if (err) return done(err);
-
+            console.log('logging in', user);
+            
             (!user) ? ( 
                 req.flash('errorTitle', 'Login failed!') &&
                 req.flash('error', 'Username does not exist!') && 
