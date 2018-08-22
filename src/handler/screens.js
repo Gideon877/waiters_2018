@@ -45,8 +45,6 @@ module.exports = function(models) {
     }
 
     const getRegistrationScreen = (req, res, done) => {
-        console.log('herrrrr');
-        
         (req.session && req.session.user) 
         ? res.redirect('/login')
         : res.render('signup/register');

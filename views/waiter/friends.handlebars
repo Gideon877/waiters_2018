@@ -62,14 +62,14 @@
 
     <div class="ui container">
         <h4 class="ui horizontal divider header">
-            <i class="bar chart icon"></i>
+            <i class="users icon icon"></i>
             Friends
         </h4>
         <div class="ui four stackable link cards">
             {{#each userFriends}}
             <div class="card">
                 <div class="image">
-                    <img src="/images/{{firstName}}.jpg">
+                    <img src="/images/{{imagePathName}}">
                 </div>
                 <div class="content">
                     <div class="header"><a href="/waiter/{{user._id}}/friend/{{_id}}" class="header">{{firstName}}</a></div>
@@ -87,9 +87,30 @@
                     <span>
                         <a href="">
                             <i class="user icon"></i>
-                                75 Friends
+                            75 Friends
                         </a>
                     </span>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+        {{!-- List of friends you not connected with   usersToConnect--}}
+
+        <h4 class="ui horizontal divider header">
+            <i class="disabled users icon icon"></i>
+            People you may know.
+        </h4>
+
+        <div class="ui middle aligned divided list">
+            {{#each usersToConnect}}
+            <div class="item">
+                <div class="right floated content">
+                    <div class="ui button">Add</div>
+                </div>
+                <img class="ui avatar image" src="/images/{{imagePathName}}">
+                <div class="content">
+                    {{firstName}}
                 </div>
             </div>
             {{/each}}

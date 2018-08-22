@@ -3,50 +3,16 @@
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
-const data = require('../../lib/days');
 
+const data = require('../../lib/days');
+const General = require('../../lib/general');
 const { FriendStatuses} = require('../../lib/constants');
+
 
 module.exports = function(models) {
     const Users = models.User;
     const Friends = models.Friends;
     const Messages = models.Messages;
-
-    const getUsers = () => {
-        return new Promise((resolve, reject)=> { 
-            Users.find({}, (err, users) => {
-                if (err) return reject(err);
-                return resolve(users);
-            })
-        })
-    };
-
-    const getUserById = (id) => {
-        return new Promise((resolve, reject)=> { 
-            Users.findOne({_id: id}, (err, user) => {
-                if (err) return reject(err);
-                return resolve(user);
-            })
-        })
-    };
-
-    const getFriends = () => {
-        return new Promise((resolve, reject)=> { 
-            Friends.find({}, (err, friends) => {
-                if (err) return reject(err);
-                return resolve(friends);
-            })
-        })
-    }
-
-    const getMessages = () => {
-        return new Promise((resolve, reject)=> { 
-            Messages.find({}, (err, messages) => {
-                if (err) return reject(err);
-                return resolve(messages);
-            })
-        })
-    }
 
     const getScreen = async (req, res, done) => {
         if (req.session && req.session.user) {
@@ -59,62 +25,34 @@ module.exports = function(models) {
             });
 
             userFriends = getNames(users, userFriends);
-            console.log('users', users);
+            // console.log('users', users);
             
             _.remove(userFriends, function(x){
                 return x.ownerId != user._id;
             });
+
+            userFriends = General.getRandomUserProfile(userFriends);
+            userFriends = _.sortBy(userFriends, ['firstName']);
+
+            let newUsers = General.getPeopleToConnect(users , req.params.id);
+            let usersToConnect = General.getRandomUserProfile(newUsers, req.params.id);
+            
             
             const getData = {
                 user,
                 messageCount: userMessages.length,
-                userFriends: _.sortBy(userFriends, ['firstName']),
+                userFriends: userFriends,
                 friendsCount: userFriends.length,
+                usersToConnect
             };
+            console.log('getdata', getData);
+
             res.render('waiter/friends', getData);
         } else {
             res.redirect('/login')
         }
     }
    
-    function getNames(users, friends) {
-        users.forEach(function(e){
-            friends.forEach(function(o){
-                if (e._id == o.friendId) {
-                    o.firstName = e.firstName;
-                    o.lastSeen = moment(e.timestamp.lastSeen).from(moment(moment.utc())) ;
-                }
-            })
-        })
-        return friends;
-    }
-
-     /**
-     * @param  {Object} user
-     * @param  {String} user._id
-     * 
-     * @param  {Object} friend
-     * @param  {String} friend._id
-     * @param  {Object} friend.timestamp
-     * @param  {String} friend.timestamp.lastSeen
-     */
-
-    const createFriendConnection = (user, friend) => {
-        Friends.create({
-            ownerId: user._id,
-            friendId: friend._id,
-            status: FriendStatuses.Pending,
-            timestamp: {
-                created: moment.utc(),
-                lastSeen: friend.timestamp.lastSeen || moment().format('lll')
-            },
-            friend
-        }, function(err){
-            if (err) return done(err)
-        });
-    }
-
-
     const getUserScreen = (req, res, done) => {
         (req.session && req.session.user) 
         ? (Users.findOne({
@@ -159,6 +97,79 @@ module.exports = function(models) {
             friendsCount: friends.incoming.length,
         };
         res.render('waiter/users', getData);
+    }
+
+    const getUsers = () => {
+        return new Promise((resolve, reject)=> { 
+            Users.find({}, (err, users) => {
+                if (err) return reject(err);
+                return resolve(users);
+            })
+        })
+    };
+
+    const getUserById = (id) => {
+        return new Promise((resolve, reject)=> { 
+            Users.findOne({_id: id}, (err, user) => {
+                if (err) return reject(err);
+                return resolve(user);
+            })
+        })
+    };
+
+    const getFriends = () => {
+        return new Promise((resolve, reject)=> { 
+            Friends.find({}, (err, friends) => {
+                if (err) return reject(err);
+                return resolve(friends);
+            })
+        })
+    }
+
+    const getMessages = () => {
+        return new Promise((resolve, reject)=> { 
+            Messages.find({}, (err, messages) => {
+                if (err) return reject(err);
+                return resolve(messages);
+            })
+        })
+    }
+
+      /**
+     * @param  {Object} user
+     * @param  {String} user._id
+     * 
+     * @param  {Object} friend
+     * @param  {String} friend._id
+     * @param  {Object} friend.timestamp
+     * @param  {String} friend.timestamp.lastSeen
+     */
+    const createFriendConnection = (user, friend) => {
+        Friends.create({
+            ownerId: user._id,
+            friendId: friend._id,
+            status: FriendStatuses.Pending,
+            timestamp: {
+                created: moment.utc(),
+                lastSeen: friend.timestamp.lastSeen || moment().format('lll')
+            },
+            friend
+        }, function(err){
+            if (err) return done(err)
+        });
+    }
+
+
+    function getNames(users, friends) {
+        users.forEach(function(e){
+            friends.forEach(function(o){
+                if (e._id == o.friendId) {
+                    o.firstName = e.firstName;
+                    o.lastSeen = moment(e.timestamp.lastSeen).from(moment(moment.utc())) ;
+                }
+            })
+        })
+        return friends;
     }
 
     return {

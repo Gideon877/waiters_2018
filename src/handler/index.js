@@ -42,21 +42,26 @@ let user = {
   firstName: 'Thabang'
 }
 
-console.log(friends);
+// console.log(friends);
 
+const { Images } = require('../lib/constants').ImagePath; //['amanda.jpg', 'viwe.jpg','john.jpg', 'rachel.png'];
+
+const max = Images.length - 1;
 
 users.forEach(function(e){
-  friends.forEach(function(o){
-    if (e._id == o.friend) {
-      o.firstName = e.firstName;
-    }
-  })
+  let index = _.random(1, max)
+  e.imagePathName = 'king'
+  if (!e.imagePathName) {
+    e.imagePathName = Images[index];
+
+  }
 })
+users = _.sortBy(users, ['firstName'])
 
 console.log("-------------------------------------------------------");
 
-_.remove(friends, function(x){
-  return x.owner !== user._id;
-})
+// _.remove(friends, function(x){
+//   return x.owner !== user._id;
+// })
 
-console.log(friends);
+console.log(users);

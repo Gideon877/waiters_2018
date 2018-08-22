@@ -4,7 +4,8 @@ module.exports = function(mongoUrl){
     mongoose.connect(mongoUrl);
 
     const User = mongoose.model('User', {
-        age: Number,
+        age: Number, 
+        gender: { type: String, required: true },
         firstName: { type: String, required: true, unique: false },
         lastName: { type: String, required: true, unique: false },
         email: { type: String, required: false },
@@ -20,7 +21,9 @@ module.exports = function(mongoUrl){
         friendCount: {
             connect: Number,
             requests: Number,
-        }
+        },
+        messagesCount: Number,
+        imagePathName: String
     });
 
     const Friends = mongoose.model('Friends', {

@@ -1,7 +1,7 @@
 'use strict'
 const moment = require('moment');
 const _ = require('lodash');
-
+const { Other } = require('../lib/constants').ImagePath;
 /**
  * @param  {Array} users
  * @param  {Array} days
@@ -87,3 +87,31 @@ module.exports.updateShiftDays = (params) => {
     user.save();
     return user;
 }
+
+/**
+ * @param  {Array} users
+ */
+module.exports.getRandomUserProfile = users => {
+    const max = Other.length - 1;
+    users.forEach( x => {
+        let index = _.random(1, max);
+        if (!x.imagePathName) { 
+            x.imagePathName = Other[index];
+        };
+    })
+    return users;
+}
+
+
+/**
+ * @param  {Array} users
+ * @param  {String} userId
+ */
+module.exports.getPeopleToConnect = (users, userId) => { 
+    _.remove(users, function(x){
+        return x._id == userId;
+    });
+    console.log('getPeopleToConnect',  (users));
+
+    return users;
+};
