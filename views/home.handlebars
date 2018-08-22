@@ -1,102 +1,151 @@
 <title>
     Home</title>
+
+<!-- Standard Meta -->
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" href="/css/home.css">
+<script src="/scripts/index.js"></script>
+
 </head>
 
 <body>
-    <hr>
-    <div class="ui container">
-        <div class="ui icon menu" id="">
-            <div class="item">
-                <i class="home icon"></i>Home
-            </div>
-            <div class="item">
-                <a href="#"><i class="info icon"></i>About</a>
-            </div>
-            <div class="item">
-                <a href="#"><i class="users icon"></i>Services</a>
-            </div>
-            <div class="right item">
-                <a href="/login"><i class="sign in icon"></i>Sign-In</a>
-            </div>
-            <div class="item">
-                <a href="/register"><i class="user secret icon"></i>Sign-Up</a>
-            </div>
-        </div>
-    </div>
-
-    <hr>
-    <div class="ui container">
-
-
-
-
-
-
-
-
-
-
-
-
-        <div class="ui two column grid">
-            <div class="column">
-                <div class="ui raised segment">
-                    <a class="ui green ribbon label">Contact</a>
-                    <ul>
-                        <li>Cell: +2778 123 4567</li>
-                        <li>Tel: +27(021) 123 4567</li>
-                    </ul>
-                    <a class="ui red ribbon label">Email</a>
-                    <ul>
-                        <li>King:
-                            <a href="mailto:tblar84@gmail.com?Subject=Online%20Order" target="_top">tblar84@gmail.com</a>
-                        </li>
-                    </ul>
+    <!-- Following Menu -->
+    <div class="ui large top fixed hidden menu">
+        <div class="ui container">
+            <a class="active item">Home</a>
+            <div class="right menu">
+                <div class="item">
+                    <a class="ui button" href="/login">Login</a>
                 </div>
-            </div>
-            <div class="column">
-                <div class="ui segment">
-                    <a class="ui blue right ribbon label">Facebook</a>
-                    <ul>
-                        <li>
-                            <i class="facebook square icon"></i>
-                            <a target="_blank" href="https://www.facebook.com/">Follow Us</a>
-                        </li>
-                        <li>
-                            <i class="facebook icon"></i>
-                            <a target="_blank" href="https://www.facebook.com/notifications">Like our Page</a>
-                        </li>
-                    </ul>
-                    <a class="ui teal right ribbon label">Twitter</a>
-                    <ul>
-                        <li>
-                            <i class="twitter icon"></i>
-                            <a target="_blank" href="https://www.twitter.com/">Twitter</a>
-                        </li>
-                    </ul>
+                <div class="item">
+                    <a class="ui primary button" href="/register">SignUp</a>
                 </div>
             </div>
         </div>
     </div>
-    <hr>
+    <!-- Sidebar Menu -->
+    <div class="ui vertical inverted sidebar menu">
+        <a class="active item">Home</a>
+        <a class="item" href="/login">Login</a>
+        <a class="item" href="/register">Signup</a>
+    </div>
+    <!-- Page Contents -->
+    <div class="pusher">
+        <div class="ui inverted vertical masthead center aligned segment">
+            <div class="ui container">
+                <div class="ui large secondary inverted pointing menu">
+                    <a class="toc item">
+                        <i class="sidebar icon"></i>
+                    </a>
+                    <a class="active item">Home</a>
+                    <div class="right item">
+                        <a class="ui inverted button" href="/login">Login</a>
+                        <a class="ui inverted button" href="/register">SignUp</a>
+                    </div>
+                </div>
+            </div>
+            <div class="ui text container">
+                <h1 class="ui inverted header">
+                    Waiter Web Application
+                </h1>
+                <h2>Do whatever you want when you want to.</h2>
+                <a class="ui huge primary button" href="/register">Get Started <i class="right arrow icon"></i></a>
+            </div>
+        </div>
 
+        <div class="ui vertical stripe segment">
+            <div class="ui middle aligned stackable grid container">
+                <div class="row">
+                    <div class="eight wide column">
+                        <h3 class="ui header">Helps manager to keep track of shifts</h3>
+                        <p>Waiters can login using their account details and select only <em style="color: red;">3</em> working
+                            days.
+                        </p>
+                        <h3 class="ui header">Managers life made easy</h3>
+                        <p>Yes that's right, as an admin, you can see a weekly day shift with all waiter's schedule.</p>
+                    </div>
+                    <div class="six wide right floated column">
+                        <img src="/images/Viwe.jpg" class="ui large bordered rounded image">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="center aligned column">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui vertical stripe segment">
+            <div class="ui text container">
+                <h3 class="ui header">About Waiter's Web Application </h3>
+                <h4>Waiters can:</h4>
+                <ul>
+                    <li>
+                        <p>Register</p>
+                    </li>
+                    <li>
+                        <p>Login</p>
+                    </li>
+                    <li>
+                        <p>be able to select days they want to work on, depepending on availability</p>
+                    </li>
+                    <li>
+                        <p>Follow friends and see what they have been up to</p>
+                    </li>
+                    <br>
+
+                </ul>
+                <h4 class="ui horizontal divider header">
+                    <i class="bar chart icon"></i>
+                </h4>
+
+                <h4>Admin can:</h4>
+                <ul>
+                    <li>
+                        <p>Register and Delete a user</p>
+                    </li>
+                    <li>
+                        <p>Update days</p>
+                    </li>
+                    <li>
+                        <p>see how many waiters are available to work for each day</p>
+                    </li>
+                    <li>
+                        <p>reset the data to use the system for a new week</p>
+                    </li>
+                    <br>
+
+                </ul>
+            </div>
+        </div>
+
+        <div class="ui inverted vertical footer segment">
+            <div class="ui container">
+                <div class="ui stackable inverted divided equal height stackable grid">
+                    <div class="three wide column">
+                        <h4 class="ui inverted header">About</h4>
+                        <div class="ui inverted link list">
+                            <a href="#" class="item">Sitemap</a>
+                            <a href="#" class="item">Contact Us</a>
+                        </div>
+                    </div>
+                    <div class="three wide column">
+                        <h4 class="ui inverted header">Services</h4>
+                        <div class="ui inverted link list">
+                            <a href="#" class="item">Github</a>
+                            <a href="#" class="item">Facebook</a>
+                            <a href="#" class="item">Twitter</a>
+                            <a href="#" class="item">Instagram</a>
+                        </div>
+                    </div>
+                    <div class="seven wide column">
+                        <h4 class="ui inverted header">Waiter App</h4>
+                        <p>Created By: Thabang Gideon Magaola</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
-
-</html>
-
-
-{{!--
-<div class="ui segment">
-    <div class="ui left rail">
-        <div class="ui segment">
-            Left Rail Content
-        </div>
-    </div>
-    <div class="ui right rail">
-        <div class="ui segment">
-            Right Rail Content
-        </div>
-    </div>
-    <p></p>
-    <p></p>
-</div> --}}
