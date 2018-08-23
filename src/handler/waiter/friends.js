@@ -25,7 +25,6 @@ module.exports = function(models) {
             });
 
             userFriends = getNames(users, userFriends);
-            // console.log('users', users);
             
             _.remove(userFriends, function(x){
                 return x.ownerId != user._id;
