@@ -7,26 +7,28 @@ const { Other } = require('../lib/constants').ImagePath;
  * @param  {Array} days
  */
 
-module.exports.getDays = (users, days) => {
-    users.forEach(element => {
-        const userName = element.firstName;
-        const userDays = element.days;
-        days.forEach(element => {
-            const weekday = element.day;
-            const arrNames = element.names;
-            element.timestamp = moment().format();
-            element.lastSeen = moment(moment.utc()).from(moment(new Date()));
-            _.remove(arrNames, name => {
-                return name === userName;
-              });
-            userDays.forEach(params => {
-                if (weekday == params) {
-                    arrNames.push(userName);
-                }
+const getDays = (users, days) => {
+    return new Promise(resolve => {
+        users.forEach(element => {
+            const userName = element.firstName;
+            const userDays = element.days;
+            days.forEach(element => {
+                const weekday = element.day;
+                const arrNames = element.names;
+                element.timestamp = moment().format();
+                element.lastSeen = moment(moment.utc()).from(moment(new Date()));
+                _.remove(arrNames, name => {
+                    return name === userName;
+                  });
+                userDays.forEach(params => {
+                    if (weekday == params) {
+                        arrNames.push(userName);
+                    }
+                });
             });
         });
-    });
-    return days;
+        resolve(days);
+    })
 }
 
 
@@ -35,30 +37,32 @@ module.exports.getDays = (users, days) => {
  * @param  {Object} user
  * @param  {String} user.firstName
  */
-module.exports.getStatus = (data, user) => {
-    data.forEach( function(element){
-        element.statusBar = element.names.length;
-        if (element.statusBar >= 3) {
-            element.statusBtn = 'disabled';
-            element.class = 'positive';
-            element.status = 'Fully Booked';
-            element.checkmark = 'checkmark';
-            element.space = 'Not Available';
-        } else {
-            element.class = 'warning'
-            element.state = '';
-            element.status = 'Available';
-            element.space =  3 - element.statusBar;
-        }
-        _.find(element.names, function(x){
-            if (x == user.firstName) {
-                element.state = 'Booked';
+const getStatus = (data, user) => {
+    return new Promise((resolve) => {
+        data.forEach( function(element){
+            element.statusBar = element.names.length;
+            if (element.statusBar >= 3) {
+                element.statusBtn = 'disabled';
+                element.class = 'positive';
+                element.status = 'Fully Booked';
                 element.checkmark = 'checkmark';
-                element.statusBtn = 'checked';
-            };
-        })
+                element.space = 'Not Available';
+            } else {
+                element.class = 'warning'
+                element.state = '';
+                element.status = 'Available';
+                element.space =  3 - element.statusBar;
+            }
+            _.find(element.names, function(x){
+                if (x == user.firstName) {
+                    element.state = 'Booked';
+                    element.checkmark = 'checkmark';
+                    element.statusBtn = 'checked';
+                };
+            })
+        });
+        resolve(data);
     });
-    return data;
 };
 
 /**
@@ -67,39 +71,48 @@ module.exports.getStatus = (data, user) => {
  * @param  {String} user.firstName
  */
 
-module.exports.resetWeekStatus = (data, user) => {
-    data.forEach(function(element) {
-        var userNames = element.names;
-        element.class = '';
-        element.statusBtn = ''
-        element.checkmark = '';
-        element.state = '';
-        _.remove(userNames, function(n) {
-            return n == user.firstName
-        });
-    })
+const resetWeekStatus = (data, user) => {
+    
+    return new Promise ((resolve) => {
+        data.forEach(function(element) {
+            var userNames = element.names;
+            element.class = '';
+            element.statusBtn = ''
+            element.checkmark = '';
+            element.state = '';
+            _.remove(userNames, function(n) {
+                return n == user.firstName
+            });
+        })
+        resolve(data)
+    });
 }
 
-module.exports.updateShiftDays = (params) => {
-    let { user, shift } = params;
-    user.days = shift;
-    user.timestamp.lastUpdated = moment.utc();
-    user.save();
-    return user;
+const updateShiftDays = (params) => {
+    return new Promise((resolve, reject) => {
+        let { user, shift } = params;
+        user.days = shift;
+        user.timestamp.lastUpdated = moment.utc();
+        user.save((err, saved)=> {
+            (err) ? (reject(err)) : (resolve(saved));
+        });
+    });
 }
 
 /**
  * @param  {Array} users
  */
-module.exports.getRandomUserProfile = users => {
-    const max = Other.length - 1;
-    users.forEach( x => {
-        let index = _.random(1, max);
-        if (!x.imagePathName) { 
-            x.imagePathName = Other[index];
-        };
-    })
-    return users;
+const getRandomUserProfile = users => {
+    return new Promise((resolve) => {
+        users.forEach( x => {
+            const max = Other.length - 1;
+            let index = _.random(1, max);
+            if (!x.imagePathName) { 
+                x.imagePathName = Other[index];
+            };
+        });
+        resolve(users)
+    });
 }
 
 
@@ -107,11 +120,49 @@ module.exports.getRandomUserProfile = users => {
  * @param  {Array} users
  * @param  {String} userId
  */
-module.exports.getPeopleToConnect = (users, userId) => { 
-    _.remove(users, function(x){
-        return x._id == userId;
+const getPeopleToConnect = (users, userId) => { 
+    return new Promise(resolve => {
+        _.remove(users, function(x){
+            return x._id == userId;
+        });
+        resolve(users);
     });
-    console.log('getPeopleToConnect',  (users));
+};
 
-    return users;
+const adminData = {
+    firstName: 'admin',
+    username: 'admin',
+    days: ['Sunday', 'Friday', 'Monday'],
+}
+
+
+/**
+ * @param  {Object} user
+ * @param  {String} user.firstName
+ * @param  {Array} users
+ * @param  {Array} days
+ */
+
+const getFilteredDays =  (users, days, user) => {
+    return new Promise((resolve, reject) => {
+        getDays(users, days).then(x => {
+            getStatus(x, user).then(
+                userDays => {
+                    resolve(userDays)
+                }
+            )
+        })
+    });
+}
+
+
+module.exports = {
+    adminData,
+    getDays,
+    getStatus,
+    getFilteredDays,
+    resetWeekStatus,
+    updateShiftDays,
+    getRandomUserProfile,
+    getPeopleToConnect
 };

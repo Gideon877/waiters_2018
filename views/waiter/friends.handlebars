@@ -30,7 +30,7 @@
                     <i class="icon mail"></i> Messages
                     <div class="floating ui red label">{{messageCount}}</div>
                 </a>
-                <a class="item" href="/friends/{{user._id}}">
+                <a class="item" href="/friends">
                     <i class="icon users"></i> Friends
                     <div class="floating ui teal label">{{friendsCount}}</div>
                 </a>
@@ -65,6 +65,7 @@
             <i class="users icon icon"></i>
             Friends
         </h4>
+        <hr>
         <div class="ui four stackable link cards">
             {{#each userFriends}}
             <div class="card">
@@ -72,7 +73,7 @@
                     <img src="/images/{{imagePathName}}">
                 </div>
                 <div class="content">
-                    <div class="header"><a href="/waiter/{{user._id}}/friend/{{_id}}" class="header">{{firstName}}</a></div>
+                    <div class="header"><a href="#" class="header">{{firstName}}</a></div>
                     <div class="meta">
                         <a>Friends</a>
                     </div>
@@ -95,25 +96,27 @@
             {{/each}}
         </div>
 
-        {{!-- List of friends you not connected with   usersToConnect--}}
+        {{!-- List of friends you not connected with usersToConnect--}}
 
         <h4 class="ui horizontal divider header">
             <i class="disabled users icon icon"></i>
             People you may know.
         </h4>
 
-        <div class="ui middle aligned divided list">
-            {{#each usersToConnect}}
-            <div class="item">
-                <div class="right floated content">
-                    <div class="ui button">Add</div>
+        <form action="" method="POST">
+            <div class="ui middle aligned divided list">
+                {{#each usersToConnect}}
+                <div class="item">
+                    <div class="right floated content">
+                        <div class="ui button"><a href="/friends/add/{{_id}}">View</a></div>
+                    </div>
+                    <img class="ui avatar image" src="/images/{{imagePathName}}">
+                    <div class="content" name="asasa" value="asasa">
+                        {{firstName}}
+                    </div>
                 </div>
-                <img class="ui avatar image" src="/images/{{imagePathName}}">
-                <div class="content">
-                    {{firstName}}
-                </div>
+                {{/each}}
             </div>
-            {{/each}}
-        </div>
+        </form>
     </div>
 </body>

@@ -74,16 +74,16 @@ app.get('/admin/:id', screens.getAdminScreen);
 // app.post('/admin/:id')
 
 // Friends route to friend's page
-app.get('/friends/:id', friends.getScreen);
-// app.post('/friends/:id', friends.updateUser);
+app.get('/friends', friends.getFriendsScreen);
 
-app.get('/waiter/:id/friend/:friendId', friends.getUserScreen);
-// app.post('/waiter/:id/friend/:friendId', friends.updateUser);
+app.get('/friends/add/:id', friends.viewMoreDetails);
+app.post('/friends/add/:id', friends.addFriend);
+
+// app.get('/waiter/:id/friend/:friendId', friends.getUserScreen);
+// app.post('/waiter/:id/friend/:friendId', friends.addFriend);
 
 // //logout screen
 app.get('/logout', function(req, res, done) {
-    console.log('logging Out', req.session.user);
-    
     if (req.session && req.session.user) {
         let { user } = req.session;
         
@@ -96,7 +96,6 @@ app.get('/logout', function(req, res, done) {
             }
         }, (err, user) => {
             if (err) return done(err);
-            console.log('logging Out 2', user);
         })
     }
     
@@ -108,3 +107,59 @@ var port = app.get("port");
 app.listen(port, function() {
     console.log('Server started at http://localhost:' + port)
 });
+
+
+/**
+ * register
+ * login
+ * user
+ * admin
+ * messages
+ * friends
+ *  
+ *     
+ *  Register 
+ *      - Post 
+ *      - Get
+ * 
+ * Login
+ *  - Post
+ *  - Get
+ * 
+ * Admin    Messages    User
+ *  - CRUD
+ * 
+ *
+
+ app.get('/api/create'); // returns errors
+ app.post('/api/create'); // create user to db
+ 
+ app.get('/api/singup'); // returns errors
+ app.post('/api/singup'); // Verify user from db
+
+//  Admin
+ app.get('/api/admin/:id'); 
+ app.post('/api/admin/:id'); // 
+ app.update('/api/admin/:id');
+ app.delete('/api/admin/:id');
+
+//  User
+ app.get('/api/user/:id'); // get 
+ app.post('/api/user/:id');
+ app.update('/api/user/:id');
+ app.delete('/api/user/:id');
+
+ //  Friends
+ app.get('/api/friends/:id');
+ app.post('/api/friends/:id');
+ app.update('/api/friends/:id');
+ app.delete('/api/friends/:id');
+
+//  Messages
+ app.get('/api/message/:id');
+ app.post('/api/message/:id');
+ app.update('/api/message/:id');
+ app.delete('/api/message/:id');
+
+ */
+ 

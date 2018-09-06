@@ -11,20 +11,21 @@ module.exports = function(models) {
     const mongoDB = models.User;
     const getWaiterScreen = (req, res, done) => {
         (req.session && req.session.user) ?
-        (mongoDB.find({}, (err, users) => { 
+        (mongoDB.find({}, async (err, users) => { 
             if (err) return done(err);
+
             let user = _.find(users, function(element) {
                 return element._id == req.params.id
             });
-            General.resetWeekStatus(data, user);
-            let days = General.getDays(users, data);
-            days = General.getStatus(days, user);
+            await General.resetWeekStatus(data, user);
+
+            let days = await General.getFilteredDays(users, data, user);
             const getData = {
                 user,
                 days,
                 messageCount: 1,
                 userFriends: [],
-                friendsCount: 0
+                friendsCount: 1
             };
             res.render('waiter/home', getData);
 
@@ -34,7 +35,7 @@ module.exports = function(models) {
     const updateUserDays = (req, res, done) => {
         const { shift } = req.body;
         (req.session && req.session.user) ?
-        (mongoDB.find({}, (err, users) => { 
+        (mongoDB.find({}, async (err, users) => { 
             if (err) return done(err);
             let user = _.find(users, function(element) {
                 return element._id == req.params.id
@@ -43,20 +44,22 @@ module.exports = function(models) {
                 req.flash('error', 'Select three prefered working days, and press save button to submit') &&
                 res.redirect('/waiters/' + user.id);
             } else {
-                General.resetWeekStatus(data, user);
-                user = General.updateShiftDays({shift, user});
+                await General.resetWeekStatus(data, user);
+                user = await General.updateShiftDays({shift, user});
                 _.remove(users, function (element) {
                     return element._id == req.params.id
                 });
+
                 users.push(user);
-                let days = General.getDays(users, data);
-                days = General.getStatus(days, user);
+
+                let days = await General.getFilteredDays(users, data, user);
+
                 const getData = {
                     user,
                     days,
                     messageCount: 1,
                     userFriends: [],
-                    friendsCount: 0
+                    friendsCount: 1
                 };
                 res.render('waiter/home', getData);
             }

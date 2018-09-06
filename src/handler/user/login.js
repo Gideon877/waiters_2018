@@ -2,6 +2,7 @@
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
+const USER = require('../waiter/friends');
 
 module.exports = function(models) {
     const mongoDB = models.User;
@@ -15,7 +16,6 @@ module.exports = function(models) {
 
         mongoDB.findOne({ username }, (err, user) => {
             if (err) return done(err);
-            console.log('logging in', user);
             
             (!user) ? ( 
                 req.flash('errorTitle', 'Login failed!') &&

@@ -1,10 +1,10 @@
 module.exports = [{
     day: 'Sunday',
-    names: [],
+    names: ['King', 'admin'],
     status: '',
     statusBar: 0,
-    class: '',
-    state: '',
+    class: 'green',
+    state: 'green',
     checkmark: '',
     space: 0,
     statusBtn: ''
