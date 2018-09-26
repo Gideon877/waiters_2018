@@ -10,134 +10,33 @@ const shift = ['Monday', 'Friday', 'Sunday']
 const USER = require('./waiter/friends');
 const User = USER(models);
 
+const FRIENDS = require('../handler/waiter/friends');
+const Friends = FRIENDS(models)
 
-
-async function king() {
-  let myUsers = await User.getUsers();
-  let admin = await User.getUserByUsername({username: 'admin'})
-  // let viwe = myUsers._.get('')
-  // console.log(viwe);
-  var friends = [
-    {
-      name: 'king', age: 5
-    },
-    {
-      name: 'mike', age: 50
-    },
-    {
-      name: 'joy', age: 9
-    }
-  ]
-
-  var baNa = [
-    {
-      name: 'joy', age: 9
-    },
-    {
-      name: 'mike', age: 50
-    },
-    {
-      name: 'dineo', age: 5
-    }
-  ];
-friends.forEach(function(e){
-    _.remove(baNa, function(x){
-      if (x.name == e.name) {
-        
-      }
+const getUserFriendsByUsername = (params) => {
+  let { user, userFriends, users } = params;
+  return new Promise(resolve => {
+    Friends.getNames(users, userFriends)
+    .then(result => {
+        General.getRandomUserProfile(result).then(userFriends => {
+          _.sortBy(userFriends, ['firstName']);
+          resolve(userFriends);
+        })
+      })
     })
-    
-  })
-  // console.log(data);
-
-  // let newStatus = await General.getPeopleToConnect(myUsers, '5b7949cf29b1201429dfccc5')
-  console.log( '-------------f-------------------------------------------------');
-  let days = await General.getFilteredDays(myUsers, data, {})
-  console.log(myUsers.length)
-  
-  let bb = _.forEach(myUsers, function(x) {
-    if (x.gender === undefined) {
-      x.gender = 'Other'
-    }
-    console.log('sf sf ', x.gender);
-
-    
-  })
-  console.log(bb)
-  
-
-
-
-  // console.log('---==w', myUsers.length);
-  
-  
 }
 
-king()
+async function king() {
+  let users = await Friends.getUsers();
+  let user = await Friends.getUserByUsername({username: 'gideon877'});
+  let userFriends = await Friends.getFriendsById(user._id);
+  let abc = await General.getPeopleToConnect({users, userId: user._id})
+  let boChomi = await getUserFriendsByUsername({ user, userFriends, users })
+
+  console.log(abc.length, user._id, '----w---', boChomi);
 
 
-// // const days = require('../lib/days');
-// var friends = [
-//   {
-//     owner: "123",
-//     friend: '124',
-//     days: []
-//   },
-//   {
-//     owner: "123",
-//    friend: '125',
-//     days: []
-//   },
-//   {
-//     owner: "124",
-//    friend: '125',
-//     days: []
-//   }
-// ];
 
-// var users = [
-//   {
-//     firstName: "Thabang",
-//     _id: '123',
-//     days: []
-//   },
-//   {
-//     firstName: "Amanda",
-//     _id: '124',
-//     days: []
-//   },
-//   {
-//     firstName: "Viwe",
-//     _id: '125',
-//     days: []
-//   }
-// ];
+}
 
-// let user = {
-//   _id: '123',
-//   firstName: 'Thabang'
-// }
-
-// // console.log(friends);
-
-// const { Images } = require('../lib/constants').ImagePath; //['amanda.jpg', 'viwe.jpg','john.jpg', 'rachel.png'];
-
-// const max = Images.length - 1;
-
-// users.forEach(function(e){
-//   let index = _.random(1, max)
-//   e.imagePathName = 'king'
-//   if (!e.imagePathName) {
-//     e.imagePathName = Images[index];
-
-//   }
-// })
-// users = _.sortBy(users, ['firstName'])
-
-// console.log("-------------------------------------------------------");
-
-// // _.remove(friends, function(x){
-// //   return x.owner !== user._id;
-// // })
-
-// console.log(users);
+king();

@@ -44,7 +44,6 @@ module.exports = function(models) {
         })
     }
 
-
     return {
         userLogin
     }

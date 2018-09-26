@@ -5,7 +5,7 @@ module.exports = function(mongoUrl){
 
     const User = mongoose.model('User', {
         age: Number, 
-        gender: { type: String, required: true },
+        gender: { type: String, required: false },
         firstName: { type: String, required: true, unique: false },
         lastName: { type: String, required: true, unique: false },
         email: { type: String, required: false },
@@ -34,13 +34,14 @@ module.exports = function(mongoUrl){
             created: String,
             lastUpdated: String,
         },
+        username: { type: String, required: false, unique: false },
         friend: {type: Object, require: false}
     });
 
     const Messages = mongoose.model('Messages', {
         ownerId: { type: String, required: true },
         friendId: { type: String, required: true },
-        status: { type: String, required: true },
+        status: { type: String, required: true }, //read, unread, deleted
         description: String,
         timestamp: {
             created: String,

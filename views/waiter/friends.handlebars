@@ -27,11 +27,11 @@
             </div>
             <div class="ui compact menu">
                 <a class="item">
-                    <i class="icon mail"></i> Messages
+                    <i class="icon mail"></i> {{!-- Messages --}}
                     <div class="floating ui red label">{{messageCount}}</div>
                 </a>
                 <a class="item" href="/friends">
-                    <i class="icon users"></i> Friends
+                    <i class="icon users"></i> {{!-- Friends --}}
                     <div class="floating ui teal label">{{friendsCount}}</div>
                 </a>
             </div>
@@ -75,10 +75,10 @@
                 <div class="content">
                     <div class="header"><a href="#" class="header">{{firstName}}</a></div>
                     <div class="meta">
-                        <a>Friends</a>
+                        <a>{{friend.firstName}}</a>
                     </div>
                     <div class="description">
-                        {{firstName}} is an software developer living in Cape Town.
+                         is an software developer living in Cape Town.
                     </div>
                 </div>
                 <div class="extra content">
@@ -108,7 +108,7 @@
                 {{#each usersToConnect}}
                 <div class="item">
                     <div class="right floated content">
-                        <div class="ui button"><a href="/friends/add/{{_id}}">View</a></div>
+                        <div class="ui button"><a href="/friends/{{_id}}">View</a></div>
                     </div>
                     <img class="ui avatar image" src="/images/{{imagePathName}}">
                     <div class="content" name="asasa" value="asasa">

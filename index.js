@@ -43,15 +43,20 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(session({
     secret: 'keyboard cat',
-    cookie: {
-        maxAge: 60000 * 30
-    },
+    // cookie: {
+    //     maxAge: 60000 * 30
+    // },
     resave: true,
     saveUninitialized: true
 }));
 app.use(flash()); // set up http session
 
-app.get('/', screens.getHomeScreen);
+app.get('/login', (req, res)=> {
+    console.log('fnfmf;');
+    
+    res.redirect('/friends');
+})
+//app.get('/', screens.getHomeScreen);
 
 // app.post('/',)
 
@@ -76,8 +81,8 @@ app.get('/admin/:id', screens.getAdminScreen);
 // Friends route to friend's page
 app.get('/friends', friends.getFriendsScreen);
 
-app.get('/friends/add/:id', friends.viewMoreDetails);
-app.post('/friends/add/:id', friends.addFriend);
+app.get('/friends/:id', friends.viewMoreDetails);
+app.post('/friends/:id', friends.addFriend);
 
 // app.get('/waiter/:id/friend/:friendId', friends.getUserScreen);
 // app.post('/waiter/:id/friend/:friendId', friends.addFriend);

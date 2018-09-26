@@ -8,6 +8,7 @@ const { Other } = require('../lib/constants').ImagePath;
  */
 
 const getDays = (users, days) => {
+    if (_.isEmpty(users) || _.isEmpty(days)) return null;
     return new Promise(resolve => {
         users.forEach(element => {
             const userName = element.firstName;
@@ -38,7 +39,8 @@ const getDays = (users, days) => {
  * @param  {String} user.firstName
  */
 const getStatus = (data, user) => {
-    return new Promise((resolve) => {
+    if (_.isEmpty(user) || _.isEmpty(data)) return null;
+    return new Promise(resolve => {
         data.forEach( function(element){
             element.statusBar = element.names.length;
             if (element.statusBar >= 3) {
@@ -71,24 +73,27 @@ const getStatus = (data, user) => {
  * @param  {String} user.firstName
  */
 
-const resetWeekStatus = (data, user) => {
-    
-    return new Promise ((resolve) => {
-        data.forEach(function(element) {
+const resetWeekStatus = params => {
+    // reset user week input statuses
+    let { user, days } = params || undefined;
+    return new Promise (resolve => {
+        days.forEach(function(element) {
             var userNames = element.names;
             element.class = '';
             element.statusBtn = ''
             element.checkmark = '';
             element.state = '';
             _.remove(userNames, function(n) {
-                return n == user.firstName
+                return n == user.firstName || 'admin';
             });
         })
-        resolve(data)
+        resolve(days)
     });
 }
 
+
 const updateShiftDays = (params) => {
+    // update user shift
     return new Promise((resolve, reject) => {
         let { user, shift } = params;
         user.days = shift;
@@ -99,10 +104,25 @@ const updateShiftDays = (params) => {
     });
 }
 
+const updateShiftWithUser = params => {
+    // update user shift and User
+    let { users } = params;
+    return new Promise(resolve => {
+        updateShiftDays(params).then( user => {
+            _.remove(users, function (element) {
+                return element._id == user._id;
+            });
+            users.push(user);
+            resolve({users, user});
+        })
+    });
+}
+
 /**
  * @param  {Array} users
  */
 const getRandomUserProfile = users => {
+    // get user a new profile picture
     return new Promise((resolve) => {
         users.forEach( x => {
             const max = Other.length - 1;
@@ -111,20 +131,27 @@ const getRandomUserProfile = users => {
                 x.imagePathName = Other[index];
             };
         });
+        users = _.sortBy(users, ['firstName']);
         resolve(users)
     });
 }
 
 
 /**
- * @param  {Array} users
- * @param  {String} userId
+ * @param  {Object} params
+ * @param  {String} params.users
+ * @param  {String} params.userId
+ * @description get user people s/he may know
  */
-const getPeopleToConnect = (users, userId) => { 
+const getPeopleToConnect = params => { 
+    let {users, userId } = params
     return new Promise(resolve => {
         _.remove(users, function(x){
-            return x._id == userId;
-        });
+            return  _.isEqual(userId, x._id);
+        })
+        // .then(() => {
+        //     await getRandomUserProfile(users )
+        // });
         resolve(users);
     });
 };
@@ -143,7 +170,9 @@ const adminData = {
  * @param  {Array} days
  */
 
-const getFilteredDays =  (users, days, user) => {
+const getFilteredDays =  params => {
+    let { users, days, user } = params;
+    if (_.isEmpty(users) || _.isEmpty(days) || !user) return null;
     return new Promise((resolve, reject) => {
         getDays(users, days).then(x => {
             getStatus(x, user).then(
@@ -151,18 +180,70 @@ const getFilteredDays =  (users, days, user) => {
                     resolve(userDays)
                 }
             )
-        })
+        }).catch(e => reject(e));
     });
 }
 
+const getFriends = () => {
+    return new Promise((resolve, reject)=> { 
+        Friends.find({}, (err, friends) => {
+            if (err) return reject(err);
+            return resolve(friends);
+        })
+    })
+}
+
+const getUsers = () => {
+    return new Promise((resolve, reject)=> { 
+        Users.find({isUserActive: true}, (err, users) => {
+            if (err) return reject(err);
+            return resolve(users);
+        })
+    })
+};
+/**
+ * @param  {String} id
+ */
+const getUserById = id => {
+    return new Promise((resolve, reject)=> { 
+        Users.findOne({_id: id}, (err, user) => {
+            if (err) return reject(err);
+            return resolve(user);
+        })
+    })
+};
+/**
+ * @param  {Object} params
+ * @param  {Array} params.data
+ * @param  {Array} params.shift
+ * @param  {Object} params.user
+ * @param  {Array} params.users
+ */
+const prepareWaiterHomePayload = async (params) => {
+    let { user } = params || req.session.user;
+    return new Promise ((resolve, reject) => {
+        resetWeekStatus(params).then(
+            getFilteredDays(params).then( days => {
+                resolve({
+                    user, days, messageCount: 1, friendsCount: 1
+                });
+            })
+        ).catch( e => reject(e));
+    });
+};
 
 module.exports = {
     adminData,
+    getUserById,
     getDays,
     getStatus,
-    getFilteredDays,
-    resetWeekStatus,
     updateShiftDays,
     getRandomUserProfile,
-    getPeopleToConnect
+    getPeopleToConnect,
+    getFriends,
+    updateShiftWithUser,
+    getUsers,
+    prepareWaiterHomePayload
+    // getFilteredDays,
+    // resetWeekStatus,
 };

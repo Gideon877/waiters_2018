@@ -9,59 +9,61 @@ const General = require('../../lib/general');
 const { FriendStatuses} = require('../../lib/constants');
 
 
+/**
+ * C - Adding New Friends for both
+ * R - View All connected friends
+ * U - Remove friend from friend list using status
+ * D - remove connection
+ */
+
+
 module.exports = function(models) {
     const Users = models.User;
     const Friends = models.Friends;
     const Messages = models.Messages;
 
     const getFriendsScreen = async (req, res, done) => {
-        if (req.session && req.session.user) {
+        try {
+            let user = req.session.user || await getUserByUsername({username: 'gideon877'});
+            console.log('getFriendsScreen User', user);
             let users = await getUsers();
-            let userFriends = await getFriends();
+            let userFriends = await getFriendsById(user.id);
             let userMessages = await getMessages();
-
-            let user = req.session.user;
-
-            userFriends = await getNames(users, userFriends);
-            
-            _.remove(userFriends, function(x){
-                return x.ownerId != user._id;
-            });
-
+          
             userFriends = await General.getRandomUserProfile(userFriends);
-            userFriends = _.sortBy(userFriends, ['firstName']);
-
-            let newUsers = await General.getPeopleToConnect(users , req.params.id);
+             
+            let newUsers = await General.getPeopleToConnect({users , userId: user._id});
             let usersToConnect = await General.getRandomUserProfile(newUsers, req.params.id);
-            
-            console.log('userFriends', userFriends);
-            console.log('------------------------------------------------------');
-            console.log('usersToConnect', usersToConnect);
-            
+
+            let filteredUsersToConnect = _.differenceBy(usersToConnect, userFriends, 'username');
+            //    console.log('usersToConnect', usersToConnect.length, 'filteredUsersToConnect', filteredUsersToConnect.length, 'userFriends', userFriends);
+               
             const getData = {
                 user,
                 messageCount: userMessages.length,
-                userFriends: userFriends,
+                userFriends,
                 friendsCount: userFriends.length,
-                usersToConnect
+                usersToConnect: filteredUsersToConnect
             };
             res.render('waiter/friends', getData);
-        } else {
-            res.redirect('/login')
+        } catch (error) {
+            console.log(error);
+            req.flash('error', error);
+            res.render('waiter/friends');
+            // res.redirect('/login')
         }
     }
    
     const getUserScreen = (req, res, done) => {
-        (req.session && req.session.user) 
-        ? (Users.findOne({
+        // (req.session && req.session.user) 
+        // ? (
+            Users.findOne({
                 _id: req.params.id
             }, function(err, user) {
                 if (err) return done(err);
                 let { messages, friends } = user || {};
                 let { connected } = friends || [];
-                // connected.forEach((dog) => {
-                //     dog.when = moment(dog.timestamp).from(moment(moment.utc()));
-                // });
+                
                 const getData = {
                     user,friend,
                     messageCount: messages.length,
@@ -69,26 +71,37 @@ module.exports = function(models) {
                     friendsCount: friends.incoming.length,
                 };
                 res.render('waiter/users', getData);
-            }))
-        : res.redirect('/login')
+            })
+        //     )
+        // : res.redirect('/login')
     };
 
     const addFriend = async (req, res, done) => {
         let friendId = req.params.id;
-        let { user } = req.session;
+        let user  = req.session.user || await getUserByUsername({username: 'gideon877'});
         let friend = await getUserById(friendId);
+        await createFriendConnection(user, friend);
+
+        let userFriends = await getFriends();
+        let users = await getUsers();
+        userFriends = await getNames(users, userFriends);
+        
+        _.remove(userFriends, function(x){
+            return x.ownerId != user._id;
+        });
+        
+        userFriends = await General.getRandomUserProfile(userFriends);
+        userFriends = _.sortBy(userFriends, ['firstName']);
+
         console.log(user, 'adding body', friend);
         
-        await createFriendConnection(user, friend);
 
         let { messages, friends } = user || {};
         let { connected } = friends || [];
-        // connected.forEach((dog) => {
-        //     dog.when = moment(dog.timestamp).from(moment(moment.utc()));
-        // });
+        
         const getData = {
             user,
-            friend,
+            userFriends,
             messageCount: 1,
             userFriends: _.sortBy(connected, ['name']),
             friendsCount: 1,
@@ -98,21 +111,31 @@ module.exports = function(models) {
     }
 
     const viewMoreDetails = async (req, res, done) => {
-        if (req.session && req.session.user) {
-            let friend = await getUserById(req.params.id);
-            const getParams = {
-                user: req.session.user,
-                friend
-            };
-            res.render('waiter/user', getParams);
-        } else {
-            res.redirect('/login');
-        }
+        // if (req.session && req.session.user) {
+            let friend, getParams;
+            console.log('----- ------- --- viewMoreDetails ------- -----');
+            
+            try {
+                friend = await getUserById(req.params.id);
+                console.log('Friend:', friend);
+                getParams = {
+                    user: await getUserByUsername({username: 'gideon877'}),
+                    friend
+                };
+                console.log(getParams);
+                res.render('waiter/user', getParams);
+            } catch (error) {
+                console.log(error);
+                res.render('waiter/user');
+            }
+        // } else {
+        //     res.redirect('/login');
+        // }
     }
 
     const getUsers = () => {
         return new Promise((resolve, reject)=> { 
-            Users.find({}, (err, users) => {
+            Users.find({isUserActive: true }, (err, users) => {
                 if (err) return reject(err);
                 return resolve(users);
             })
@@ -150,6 +173,27 @@ module.exports = function(models) {
         })
     }
 
+/**
+ * @param  {String} id
+ */
+    const getFriendsById = id => {
+        return new Promise((resolve, reject)=> { 
+            Friends.find({ ownerId: id}, (err, friends) => {
+                if (err) return reject(err);
+                return resolve(friends);
+            })
+        })
+    };
+
+    const getFriendsByIdAndStatus = id => {
+        return new Promise((resolve, reject)=> { 
+            Friends.find({ ownerId: id, status: 'CONNECTED'}, (err, friends) => {
+                if (err) return reject(err);
+                return resolve(friends);
+            })
+        })
+    }
+
     const getMessages = () => {
         return new Promise((resolve, reject)=> { 
             Messages.find({}, (err, messages) => {
@@ -175,12 +219,13 @@ module.exports = function(models) {
                 ownerId: user._id,
                 friendId: friend._id,
                 status: FriendStatuses.Pending,
+                username: friend.username,
                 timestamp: {
                     created: moment.utc() || new Date(),
                     lastSeen: friend.timestamp.lastSeen || moment().format('lll')
                 },
                 friend
-            }, function(err, newConnection){
+            }, (err, newConnection) => {
                 if (err) return reject(err);
                 console.log('User created', newConnection);
                 
@@ -216,6 +261,8 @@ module.exports = function(models) {
         getFriends,
         getUserByUsername,
         getUserById,
-        getMessages
+        getMessages,
+        getNames,
+        getFriendsById
     }
 }
