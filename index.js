@@ -13,8 +13,12 @@ const SignUp = require('./src/handler/user/signup');
 const Login = require('./src/handler/user/login');
 const Waiters = require('./src/handler/waiter/home');
 
+const API = require('./src/api/api');
+
 const Models = require('./src/schema/models');
 const models = Models(process.env.MONGO_DB_URL || 'mongodb://localhost/waiters', { useNewUrlParser: true });
+
+const Api = API(models);
 
 const admin = Admin(models);
 const friends = Friends(models);
@@ -52,7 +56,7 @@ app.use(session({
 app.use(flash()); // set up http session
 
 app.get('/login', (req, res)=> {
-    console.log('fnfmf;');
+    // console.log('fnfmf;');
     
     res.redirect('/friends');
 })
@@ -64,7 +68,7 @@ app.get('/login', screens.getLoginScreen);
 app.post('/login', login.userLogin)
 
 app.get('/register', screens.getRegistrationScreen);
-app.post('/register', signUp.validate)
+app.post('/register', Api.createNewUser);
 
 // Waiter route to waiter's page
 app.get('/waiters/:id', waiters.getWaiterScreen);

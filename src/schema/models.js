@@ -19,8 +19,8 @@ module.exports = function(mongoUrl){
         },
         isUserActive: Boolean,
         friendCount: {
-            connect: Number,
-            requests: Number,
+            following: Number,
+            follow: Number,
         },
         messagesCount: Number,
         imagePathName: String
@@ -29,13 +29,13 @@ module.exports = function(mongoUrl){
     const Friends = mongoose.model('Friends', {
         ownerId: { type: String, required: true },
         friendId: { type: String, required: true },
-        status: { type: String, required: true }, //pending, connected, rejected, deleted
+        status: { type: String, required: true }, // follow, notfollo, deleted
         timestamp: {
             created: String,
             lastUpdated: String,
         },
         username: { type: String, required: false, unique: false },
-        friend: {type: Object, require: false}
+        friendData: {type: Object, require: true}
     });
 
     const Messages = mongoose.model('Messages', {
@@ -48,12 +48,25 @@ module.exports = function(mongoUrl){
             sent: String,
             read: String,
         }
-    })
+    });
+
+    const Days = mongoose.model('Days', {
+        'day': String,
+        'names': Array,
+        status: String,
+        statusBar: Number,
+        class: String,
+        state: String,
+        checkmark: String,
+        space: Number,
+        statusBtn: String
+    });
 
     return {
         User,
         Friends,
-        Messages
+        Messages,
+        Days
     };
 
 };

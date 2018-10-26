@@ -49,6 +49,8 @@ module.exports = function(models) {
                 (
                     mongoDB.create(getUser, (err, newUser) => {
                         if (err) return done(err);
+
+                        
                         bcrypt.genSalt(15, function(err, salt) {
                             if (err)
                                 return done(err);
@@ -61,6 +63,7 @@ module.exports = function(models) {
                                 done();
                             });
                         });
+
                         (newUser && newUser.username === 'admin') ? 
                         (
                             res.redirect('/admin/'+ newUser._id)

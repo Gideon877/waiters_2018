@@ -232,6 +232,10 @@ const prepareWaiterHomePayload = async (params) => {
     });
 };
 
+const filterFriendsByStatus = params => {
+    //Get bunch of all friend
+}
+
 module.exports = {
     adminData,
     getUserById,
@@ -247,3 +251,20 @@ module.exports = {
     // getFilteredDays,
     // resetWeekStatus,
 };
+
+
+
+
+const findAnotherBoyfriend = () => {
+    return new Promise((resolve, reject) => {
+        try {
+            if (bf == 'Working, smart, handsome' && !Thabang) {
+                resolve(bf);
+            } else {
+                findAnotherBoyfriend();
+            }
+        } catch (error) {
+            return new Error('Boyfriend not defined');
+        }
+    })
+}

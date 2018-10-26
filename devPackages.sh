@@ -1,5 +1,7 @@
 rm -rf node_modules/;
 # rm -rf package-lock.json/;
+nvm use 8.10;
+export PATH=$PATH:bin
 npm install;
 nodemon;
 # npm install bcrypt;

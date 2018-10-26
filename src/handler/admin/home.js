@@ -1,7 +1,7 @@
 "use strict";
 
 const moment = require("moment");
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const data = require("../../lib/days");
 const General = require("../../lib/general");

@@ -3,11 +3,9 @@
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
-
 const data = require('../../lib/days');
 const General = require('../../lib/general');
-const { FriendStatuses} = require('../../lib/constants');
-
+const { FriendStatuses } = require('../../lib/constants');
 
 /**
  * C - Adding New Friends for both
@@ -25,12 +23,25 @@ module.exports = function(models) {
     const getFriendsScreen = async (req, res, done) => {
         try {
             let user = req.session.user || await getUserByUsername({username: 'gideon877'});
-            console.log('getFriendsScreen User', user);
+            // console.log('getFriendsScreen User', user);
+
+            // get all connected Friends
+            // get all pending Friends
+            
             let users = await getUsers();
+
             let userFriends = await getFriendsById(user.id);
+            let connected = await getConnectedFriendsByUserId(user.id);
+            let pending = await getPendingFriendsByUserId(user.id);
+
+
+            console.log('getFriendsScreen', connected, user);
+
             let userMessages = await getMessages();
           
             userFriends = await General.getRandomUserProfile(userFriends);
+            pending = await General.getRandomUserProfile(pending);
+            connected = await General.getRandomUserProfile(connected);
              
             let newUsers = await General.getPeopleToConnect({users , userId: user._id});
             let usersToConnect = await General.getRandomUserProfile(newUsers, req.params.id);
@@ -42,8 +53,9 @@ module.exports = function(models) {
                 user,
                 messageCount: userMessages.length,
                 userFriends,
-                friendsCount: userFriends.length,
-                usersToConnect: filteredUsersToConnect
+                friendsCount: pending.length,
+                usersToConnect: filteredUsersToConnect,
+                pending
             };
             res.render('waiter/friends', getData);
         } catch (error) {
@@ -53,6 +65,9 @@ module.exports = function(models) {
             // res.redirect('/login')
         }
     }
+
+
+
    
     const getUserScreen = (req, res, done) => {
         // (req.session && req.session.user) 
@@ -70,6 +85,9 @@ module.exports = function(models) {
                     userFriends: _.sortBy(connected, ['name']),
                     friendsCount: friends.incoming.length,
                 };
+
+                // console.log(getData);
+                
                 res.render('waiter/users', getData);
             })
         //     )
@@ -141,6 +159,15 @@ module.exports = function(models) {
             })
         })
     };
+// db.bios.find( { Country: { $ne: "Country1" } } )
+    const findActiveUsers = username => {
+        return new Promise((resolve, reject)=> { 
+            Users.find({ isUserActive: true , username: {$nin: ['admin', username]}}, (err, users) => {
+                if (err) return reject(err);
+                return resolve(users);
+            })
+        })
+    };
 
     const getUserById = (id) => {
         return new Promise((resolve, reject)=> { 
@@ -185,9 +212,43 @@ module.exports = function(models) {
         })
     };
 
-    const getFriendsByIdAndStatus = id => {
+    /**
+     * @param  {Object} params
+     * @param  {String} params.id
+     * @param  {String} params.status
+     */
+    const getFriendsByIdAndStatus = (params) => {
+        let { id, status } = params;
         return new Promise((resolve, reject)=> { 
-            Friends.find({ ownerId: id, status: 'CONNECTED'}, (err, friends) => {
+            Friends.find({ ownerId: id, status}, (err, friends) => {
+                if (err) return reject(err);
+                return resolve(friends);
+            })
+        })
+    }
+
+      /**
+     * @param  {Object} params
+     * @param  {String} params.id
+     * @param  {String} params.status
+     */
+    const getConnectedFriendsByUserId = id => {
+        return new Promise((resolve, reject)=> { 
+            Friends.find({ ownerId: id, status: FriendStatuses.connected}, (err, friends) => {
+                if (err) return reject(err);
+                return resolve(friends);
+            })
+        })
+    }
+
+      /**
+     * @param  {Object} params
+     * @param  {String} params.id
+     * @param  {String} params.status
+     */
+    const getPendingFriendsByUserId = id => {
+        return new Promise((resolve, reject)=> { 
+            Friends.find({ ownerId: id, status: FriendStatuses.Pending}, (err, friends) => {
                 if (err) return reject(err);
                 return resolve(friends);
             })
@@ -263,6 +324,9 @@ module.exports = function(models) {
         getUserById,
         getMessages,
         getNames,
-        getFriendsById
+        getFriendsById,
+        getFriendsByIdAndStatus,
+        getConnectedFriendsByUserId,
+        getPendingFriendsByUserId,findActiveUsers
     }
 }

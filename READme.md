@@ -1,19 +1,28 @@
+# Waiter's Web Application
 
+## User/Waiter
 
+#### 1. User
 
+* Register new account
+* Login using username and password
+* View available days
+* Select days to work (Update schedule)
 
-## User
-    - Home Page
-        * See days available
-            -  All users days
+#### 2. Friends
 
-        * Be able to see messages and friends available
-            - each user's friends and msg data
+* Add or Follow
+* Delete
+* View more details
 
-        * Update User
-            - user details
+#### 3. Messages
 
-## User
-    ### Friends
-        - View current friends and recommendations
-        - 
+*  Read Messages
+*  Delete Messages
+*  Send Messages
+
+#### 4. Admin
+* Login using `username`: `admin` and password
+* View Waiter's days
+* Clear schedule
+* Approve schedule
