@@ -1,9 +1,10 @@
-rm -rf node_modules/;
-# rm -rf package-lock.json/;
-nvm use 8.10;
-export PATH=$PATH:bin
-npm install;
-nodemon;
+rm -rf node_modules;
+rm -rf package-lock.json;
+# nvm deactivate --version
+# nvm use 8.10;
+# export PATH=$PATH:bin
+# npm install;
+yarn && nodemon;
 # npm install bcrypt;
 # npm install body-parser;
 # npm install express;

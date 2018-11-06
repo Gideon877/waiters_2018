@@ -3,51 +3,67 @@
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const moment = require("moment");
-const Models = require("../schema/models");
-const models = Models(
-  process.env.MONGO_DB_URL || "mongodb://localhost/waiters",
-  { useNewUrlParser: true }
-);
-
 const API = require("./general");
-const Api = API(models);
 
 module.exports = function(models) { 
+    const Api = API(models);
 
-    const createNewUser = async (req, res) => {
-        const data = req.body || {};
+    const registerNewUser = async (data) => {
+        // const data = {} ; //req.body || {};
         const {  username } = data;
-        return await Api.isUserAlreadyExist(username)
-        .then((result) => {
-            if (!result) {
-                if (!result) FailToExecute('User Already Exists');
-            }
-        })
-        .then(() => {
-            return Api.isDataValid(data).then((result) => {
-                if (!result) FailToExecute('Invalid Data');
-            })
-        })
-        .then(() => {
-            return Api.createUser(data).then(result => { 
-                return result
-            })
-        })
-        .catch(FailToExecute);
+
+         // returns true or false
+        let userExist = await Api.isUserAlreadyExist(username);
+        if (userExist) {
+            return FailToExecute('User Already Exists');
+        };
+        
+        // returns true or false
+        let checkData = await Api.isDataValid(data);
+        console.log('checkData:', checkData)
+        if (!checkData) {
+            return FailToExecute('Invalid Data');
+        };
+
+        let newUser = await Api.createUser(data);
+        return newUser;
+
     }
 
+    const login = async (data) => {
+        // const data = {} ; //req.body || {};
+        const {  username, password } = data;
+        let userExist = await Api.isUserAlreadyExist(username);
+        let user = await Api.findUserByUsername(username);
+        
+        if (!userExist) {
+            return FailToExecute('User does not exist');
+        }
 
+        let isPasswordCorrect = await Api.decryptPassword({password, user});
+        if (!isPasswordCorrect) { 
+            return FailToExecute('Incorrect Password'); 
+        };
+       
+        return user;
+    };
+
+
+    function returnToRegistration() {
+        
+    };
 
     function FailToExecute(err) {
+        console.log('FailToExecute', err)
         // req.flash('error', err);
         // res.render('signup/register');
-        return {}
+        return {err}
     }
     
     
 
     return {
-        createNewUser,
+        registerNewUser, login
     }
 };
 

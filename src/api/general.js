@@ -2,14 +2,14 @@
 const moment = require('moment');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
-const { Friend } = require('./app');
+// const { Friend } = require('./app');
 const { ImagePath, FriendStatuses, BCryptRounds } = require('../lib/constants');
 
 module.exports = function(models) {
     const Users = models.User;
     const Friends = models.Friends;
     const Messages = models.Messages;
-
+    const Days = models.Days;
     /**
      * @param  {String} password
      */
@@ -51,16 +51,21 @@ module.exports = function(models) {
         const max = Images.length - 1;
         return Images[_.random(1, max)]
     };
-
+    /**
+     * @param  {} object
+     * @description 
+     */
     const isDataValid = (object) => {
         let check;
         for (const key in object) {
             if (object.hasOwnProperty(key)) {
                 check = !_.isEmpty(object[key]);
+                console.log(object[key], 'check', !_.isEmpty(object[key]))
             }
+            // console.log(check, 'object.hasOwnProperty(key)', object.hasOwnProperty(key))
             if (!check) {
                 return false;
-            }
+            };
         }
         return check;
     }
@@ -262,12 +267,10 @@ module.exports = function(models) {
              * @description Username - current logged in User
              */
             const findActiveUsers = username => {
-                return Users.find({ isUserActive: true , username: {$nin: ['admin', username]}})
-                .then((users) => {
-                    return users;
-                }).catch((err) => {
-                    return err;
-                });
+                return Users
+                .find({ isUserActive: true , username: { $nin: ['admin', username]}})
+                .then(users => users)
+                .catch(err =>  err);
             };
 
             const findAllUser = () => {
@@ -299,7 +302,10 @@ module.exports = function(models) {
                     return err;
                 })
             };
-
+            /**
+             * @param  {String} username
+             * @description returns true if user exist or false if user doesn't
+             */
             const isUserAlreadyExist = (username) => {
                 return Users.findOne({username}).then(user => {
                     if (_.isEmpty(user)) { 
@@ -357,7 +363,36 @@ module.exports = function(models) {
                     return err;
                 });
             }
+
+            const updateUserDays = (params) => {
+                let {username, days} = params;
+                return Users.findOneAndUpdate({username}, {days})
+                .then(result => result)
+                .then(async (user) => {
+                    return await findUserByUsername(user.username);
+                })
+                .catch(error => error);
+            }
             
+
+    /** Days  */ 
+
+    var data = {
+        days: ['Monday', 'Tuesday', 'Wednesday'] 
+    };
+
+
+    const getDays = () => {
+        return Days
+        .find()
+        .then(days => days)
+        .catch(error => error)
+    }
+
+    // const updateWaiterDays = () => {
+    //     return findAndUpdate();
+    // }
+
 
     /** Messages  */ 
    
@@ -381,7 +416,12 @@ module.exports = function(models) {
         decryptPassword,
         setImagePathName,
         isDataValid,
-        isUserAlreadyExist
+        isUserAlreadyExist,
+        findUserByUsername,
+
+        getDays,
+        findActiveUsers,
+        updateUserDays
     }
 };
 

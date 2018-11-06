@@ -6,12 +6,12 @@ const flash = require('express-flash');
 const session = require('express-session');
 const moment = require('moment');
 
-const Admin = require('./src/handler/admin/home');
-const Friends = require('./src/handler/waiter/friends');
-const Screens = require('./src/handler/screens');
-const SignUp = require('./src/handler/user/signup');
-const Login = require('./src/handler/user/login');
-const Waiters = require('./src/handler/waiter/home');
+// const Admin = require('./src/handler/admin/home');
+// const Friends = require('./src/handler/waiter/friends');
+// const Screens = require('./src/handler/screens');
+// const SignUp = require('./src/handler/user/signup');
+// const Login = require('./src/handler/user/login');
+// const Waiters = require('./src/handler/waiter/home');
 
 const API = require('./src/api/api');
 
@@ -20,12 +20,12 @@ const models = Models(process.env.MONGO_DB_URL || 'mongodb://localhost/waiters',
 
 const Api = API(models);
 
-const admin = Admin(models);
-const friends = Friends(models);
-const login = Login(models);
-const signUp = SignUp(models);
-const screens = Screens(models);
-const waiters = Waiters(models);
+// const admin = Admin(models);
+// const friends = Friends(models);
+// const login = Login(models);
+// const signUp = SignUp(models);
+// const screens = Screens(models);
+// const waiters = Waiters(models);
 
 const app = express();
 
@@ -62,31 +62,41 @@ app.get('/login', (req, res)=> {
 })
 //app.get('/', screens.getHomeScreen);
 
-// app.post('/',)
+// app.post('/',);
+app.get('/', async (req, res) => {
+    const data = {
+        username: 'liwa',
+        password: '14949494'
+    };
 
-app.get('/login', screens.getLoginScreen);
-app.post('/login', login.userLogin)
+    let result = await Api.login(data);
+    console.log('-----', result)
+    res.status(200).send(result);
+});
 
-app.get('/register', screens.getRegistrationScreen);
-app.post('/register', Api.createNewUser);
+// app.get('/login', screens.getLoginScreen);
+// app.post('/login', login.userLogin)
+
+// app.get('/register', screens.getRegistrationScreen);
+// app.post('/register', Api.registerNewUser);
 
 // Waiter route to waiter's page
-app.get('/waiters/:id', waiters.getWaiterScreen);
-app.post('/waiters/:id', waiters.updateUserDays);
+// app.get('/waiters/:id', waiters.getWaiterScreen);
+// app.post('/waiters/:id', waiters.updateUserDays);
 
 // Waiter route to waiter's page
-app.get('/settings/:id', screens.getWaiterSettingsScreen);
+// app.get('/settings/:id', screens.getWaiterSettingsScreen);
 // app.post('/settings/:id', waiters.updateUserProfile);
 
 // Admin page route
-app.get('/admin/:id', screens.getAdminScreen);
+// app.get('/admin/:id', screens.getAdminScreen);
 // app.post('/admin/:id')
 
 // Friends route to friend's page
-app.get('/friends', friends.getFriendsScreen);
+// app.get('/friends', friends.getFriendsScreen);
 
-app.get('/friends/:id', friends.viewMoreDetails);
-app.post('/friends/:id', friends.addFriend);
+// app.get('/friends/:id', friends.viewMoreDetails);
+// app.post('/friends/:id', friends.addFriend);
 
 // app.get('/waiter/:id/friend/:friendId', friends.getUserScreen);
 // app.post('/waiter/:id/friend/:friendId', friends.addFriend);
