@@ -6,26 +6,10 @@ const flash = require('express-flash');
 const session = require('express-session');
 const moment = require('moment');
 
-// const Admin = require('./src/handler/admin/home');
-// const Friends = require('./src/handler/waiter/friends');
-// const Screens = require('./src/handler/screens');
-// const SignUp = require('./src/handler/user/signup');
-// const Login = require('./src/handler/user/login');
-// const Waiters = require('./src/handler/waiter/home');
-
-const API = require('./src/api/api');
-
 const Models = require('./src/schema/models');
 const models = Models(process.env.MONGO_DB_URL || 'mongodb://localhost/waiters', { useNewUrlParser: true });
-
+const API = require('./src/api/api');
 const Api = API(models);
-
-// const admin = Admin(models);
-// const friends = Friends(models);
-// const login = Login(models);
-// const signUp = SignUp(models);
-// const screens = Screens(models);
-// const waiters = Waiters(models);
 
 const app = express();
 
@@ -53,7 +37,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-app.use(flash()); // set up http session
+app.use(flash()); 
 
 app.get('/login', (req, res)=> {
     // console.log('fnfmf;');
@@ -64,6 +48,7 @@ app.get('/login', (req, res)=> {
 
 // app.post('/',);
 app.get('/', async (req, res) => {
+    let user = req.session.user || undefined;
     const data = {
         username: 'liwa',
         password: '14949494'
@@ -74,32 +59,23 @@ app.get('/', async (req, res) => {
     res.status(200).send(result);
 });
 
-// app.get('/login', screens.getLoginScreen);
-// app.post('/login', login.userLogin)
+app.get('/register', Api.signupScreen);
+app.post('/register', Api.signup);
 
-// app.get('/register', screens.getRegistrationScreen);
-// app.post('/register', Api.registerNewUser);
+app.get('/login', Api.loginScreen);
+app.post('/login', Api.login);
 
-// Waiter route to waiter's page
-// app.get('/waiters/:id', waiters.getWaiterScreen);
-// app.post('/waiters/:id', waiters.updateUserDays);
+app.get('/waiter/:id	', Api.waiterScreen);
+app.post('/waiter/:id	', Api.submitShift);
 
-// Waiter route to waiter's page
-// app.get('/settings/:id', screens.getWaiterSettingsScreen);
-// app.post('/settings/:id', waiters.updateUserProfile);
+app.get('/admin', Api.home);
 
-// Admin page route
-// app.get('/admin/:id', screens.getAdminScreen);
-// app.post('/admin/:id')
+app.get('/waiter/:id/friends', Api.showAllFriends);
 
-// Friends route to friend's page
-// app.get('/friends', friends.getFriendsScreen);
-
-// app.get('/friends/:id', friends.viewMoreDetails);
-// app.post('/friends/:id', friends.addFriend);
-
-// app.get('/waiter/:id/friend/:friendId', friends.getUserScreen);
-// app.post('/waiter/:id/friend/:friendId', friends.addFriend);
+app.delete('/waiter/:id/friends/:friendId', Api.deleteFriend);
+app.get('/waiter/:id/friends/:friendId', Api.getFriendProfile);
+app.put('/waiter/:id/friends/:friendId', Api.updateFriendship);
+app.post('/waiter/:id/friends/:friendId', Api.addNewFriend);
 
 // //logout screen
 app.get('/logout', function(req, res, done) {

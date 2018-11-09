@@ -310,7 +310,7 @@ module.exports = function(models) {
                 return Users.findOne({username}).then(user => {
                     if (_.isEmpty(user)) { 
                         return false;
-                    } else { return true}
+                    } else { return true }
                 }).catch((err) => {
                     return err;
                 })
