@@ -78,8 +78,8 @@ module.exports = function(models) {
              */
             const findAllFriend = () => {
                 return Friends.find({})
-                    .then(friends => {return friends})
-                    .catch(err => {return err})
+                    .then(friends => { friends})
+                    .catch(err => { err})
             };
             
             /**
@@ -98,7 +98,7 @@ module.exports = function(models) {
              * @param  {String} ownerId
              * @description Find all user friends by user id.
              */
-            const findUserFriendsByOwnerId = (ownerId) => {
+            const findFriendsByOwnerId = (ownerId) => {
                 return Friends.find({ ownerId })
                     .then(friends => {return friends})
                     .catch(err => {return err})
@@ -107,7 +107,7 @@ module.exports = function(models) {
              * @param  {String} username
              * @description Find all friends provided username is connected to where user is not the owner of the relationship. Opposite of findUserFriendsByOwnerId.
              */
-            const findUserFriendsByUsername = (username) => {
+            const findFriendsByUsername = (username) => {
                 return Friends.find({ username })
                     .then(result => resolve(result))
                     .catch(err => {return err})
@@ -280,7 +280,9 @@ module.exports = function(models) {
                     return err;
                 });
             };
-
+            /**
+             * @param  {string} id
+             */
             const findUserById = (id) => {
                 return Users.findOne({_id: id}).then(user => {
                     return user;
@@ -401,8 +403,8 @@ module.exports = function(models) {
     return { 
         findAllFriend,
         getFriendByOwnerIdAndUsername,
-        findUserFriendsByUsername,
-        findUserFriendsByOwnerId,
+        findFriendsByUsername,
+        findFriendsByOwnerId,
         findUserById,
         findOneConnectionByIds,
         isFriendDataValid,

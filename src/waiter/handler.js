@@ -77,22 +77,37 @@ module.exports = function(models) {
     //waiter
 
     const waiterScreen = (req, res, done) => {
-        res.render('login', { });
+        let { user } = req.session || undefined;
+        let { id } = req.params;
+        if (!user) { user = Api.findUserById(id) };
+        let getDays = {};
+        let getFriends = {}
+        
+        const payload = {
+            user,
+            getDays,
+            getFriends
+        };
+        res.render('waiter', payload);
     }
 
     const submitShift = (req, res, done) => {
-
+        let { shift } = req.body || {};
+        
+        res.render('waiter', { });
     }
 
     //admin
 
     const home = (req, res, done) => {
+        res.render('admin', { });
 
     }
 
     // Friends
 
     const showAllFriends = (req, res, done) => {
+        res.render('friends', { });
 
     }
 
